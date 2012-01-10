@@ -1,0 +1,84 @@
+#!/bin/sh
+#
+# squired   service script for squired.py
+#
+# chkconfig: - 90 15
+# description: squired service
+# pidfile: /var/run/squired/squired.pid
+#
+#
+# Source function library.
+. /etc/init.d/functions
+
+SQUIRED_EXEC=/opt/squired/squired.py
+SQUIRED_USER=root
+PIDFILE=/var/run/squired/squired.pid
+
+if [ -f /etc/sysconfig/squired ]; then
+        . /etc/sysconfig/squired
+fi
+
+start() {
+    echo -n "Starting squired: "
+
+    if [ -f $PIDFILE ]; then
+        PID=`cat $PIDFILE`
+        warning
+        echo
+        echo "squired already running: $PID"
+        exit 2;
+    else
+        if [[ -z $USER || $USER == $SQUIRED_USER ]]; then
+            daemon --pidfile=$PIDFILE $SQUIRED_EXEC &> /dev/null &
+            RETVAL=$?
+        else
+            daemon --user=$SQUIRED_USER --pidfile=$PIDFILE $SQUIRED_EXE &> /dev/null &
+            RETVAL=$?
+        fi
+        if [ $RETVAL -eq 0 ]; then
+            touch /var/lock/subsys/squired
+            success
+        else
+            failure 
+        fi
+        echo
+        return $RETVAL
+    fi
+}
+
+stop() {
+    echo -n "Shutting down squired: "
+    if [ -f $PIDFILE ]; then
+        PID=`cat $PIDFILE`
+        kill $PID
+        success
+        echo
+    else
+        warning
+        echo
+        echo "squired not running"
+    fi
+    rm -f /var/lock/subsys/squired
+    return 0
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status -p $PIDFILE squired
+        ;;
+    restart|reload|condrestart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage:  {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+exit $?

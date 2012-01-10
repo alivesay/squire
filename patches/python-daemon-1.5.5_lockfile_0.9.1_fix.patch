@@ -1,0 +1,122 @@
+diff -urB python-daemon-1.5.5/daemon/pidlockfile.py python-daemon-1.5.5.modified/daemon/pidlockfile.py
+--- python-daemon-1.5.5/daemon/pidlockfile.py	2010-01-20 03:33:10.000000000 -0800
++++ python-daemon-1.5.5.modified/daemon/pidlockfile.py	2011-08-24 12:34:01.895716881 -0700
+@@ -17,11 +17,12 @@
+ import errno
+ 
+ from lockfile import (
+-    LinkFileLock,
+     AlreadyLocked, LockFailed,
+     NotLocked, NotMyLock,
+     )
+ 
++from lockfile.linklockfile import LinkLockFile
++
+ 
+ class PIDFileError(Exception):
+     """ Abstract base class for errors specific to PID files. """
+@@ -30,7 +31,7 @@
+     """ Raised when parsing contents of PID file fails. """
+ 
+ 
+-class PIDLockFile(LinkFileLock, object):
++class PIDLockFile(LinkLockFile, object):
+     """ Lockfile implemented as a Unix PID file.
+ 
+         The PID file is named by the attribute `path`. When locked,
+@@ -38,7 +39,7 @@
+         containing the process ID (PID) of the process that acquired
+         the lock.
+ 
+-        The lock is acquired and maintained as per `LinkFileLock`.
++        The lock is acquired and maintained as per `LinkLockFile`.
+ 
+         """
+ 
+@@ -53,7 +54,7 @@
+ 
+             Locks the PID file then creates the PID file for this
+             lock. The `timeout` parameter is used as for the
+-            `LinkFileLock` class.
++            `LinkLockFile` class.
+ 
+             """
+         super(PIDLockFile, self).acquire(*args, **kwargs)
+diff -urB python-daemon-1.5.5/test/test_pidlockfile.py python-daemon-1.5.5.modified/test/test_pidlockfile.py
+--- python-daemon-1.5.5/test/test_pidlockfile.py	2010-01-20 03:33:10.000000000 -0800
++++ python-daemon-1.5.5.modified/test/test_pidlockfile.py	2011-08-24 12:34:01.906718276 -0700
+@@ -318,7 +318,7 @@
+     """ Set up the test case to the specified scenario. """
+     testcase.scenario = testcase.pidlockfile_scenarios[scenario_name]
+     setup_lockfile_method_mocks(
+-        testcase, testcase.scenario, "lockfile.LinkFileLock")
++        testcase, testcase.scenario, "lockfile.LinkLockFile")
+     testcase.pidlockfile_args = dict(
+         path=testcase.scenario['path'],
+         )
+@@ -345,9 +345,9 @@
+         self.failUnlessIsInstance(instance, pidlockfile.PIDLockFile)
+ 
+     def test_inherits_from_linkfilelock(self):
+-        """ Should inherit from LinkFileLock. """
++        """ Should inherit from LinkLockFile. """
+         instance = self.test_instance
+-        self.failUnlessIsInstance(instance, lockfile.LinkFileLock)
++        self.failUnlessIsInstance(instance, lockfile.LinkLockFile)
+ 
+     def test_has_specified_path(self):
+         """ Should have specified path. """
+@@ -389,21 +389,21 @@
+         scaffold.mock_restore()
+ 
+     def test_calls_linkfilelock_acquire(self):
+-        """ Should first call LinkFileLock.acquire method. """
++        """ Should first call LinkLockFile.acquire method. """
+         instance = self.test_instance
+         expect_mock_output = """\
+-            Called lockfile.LinkFileLock.acquire()
++            Called lockfile.LinkLockFile.acquire()
+             ...
+             """
+         instance.acquire()
+         self.failUnlessMockCheckerMatch(expect_mock_output)
+ 
+     def test_calls_linkfilelock_acquire_with_timeout(self):
+-        """ Should call LinkFileLock.acquire method with specified timeout. """
++        """ Should call LinkLockFile.acquire method with specified timeout. """
+         instance = self.test_instance
+         test_timeout = object()
+         expect_mock_output = """\
+-            Called lockfile.LinkFileLock.acquire(timeout=%(test_timeout)r)
++            Called lockfile.LinkLockFile.acquire(timeout=%(test_timeout)r)
+             ...
+             """ % vars()
+         instance.acquire(timeout=test_timeout)
+@@ -487,12 +487,12 @@
+         self.failUnlessMockCheckerMatch(expect_mock_output)
+ 
+     def test_calls_linkfilelock_release(self):
+-        """ Should finally call LinkFileLock.release method. """
++        """ Should finally call LinkLockFile.release method. """
+         set_pidlockfile_scenario(self, 'exist-current-pid-locked')
+         instance = self.test_instance
+         expect_mock_output = """\
+             ...
+-            Called lockfile.LinkFileLock.release()
++            Called lockfile.LinkLockFile.release()
+             """
+         instance.release()
+         self.failUnlessMockCheckerMatch(expect_mock_output)
+@@ -511,10 +511,10 @@
+         scaffold.mock_restore()
+ 
+     def test_calls_linkfilelock_break_lock(self):
+-        """ Should first call LinkFileLock.break_lock method. """
++        """ Should first call LinkLockFile.break_lock method. """
+         instance = self.test_instance
+         expect_mock_output = """\
+-            Called lockfile.LinkFileLock.break_lock()
++            Called lockfile.LinkLockFile.break_lock()
+             ...
+             """
+         instance.break_lock()
