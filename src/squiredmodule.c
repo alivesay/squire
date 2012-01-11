@@ -7,10 +7,6 @@
 /*
  *
  * squiredmodule.c
- * Andrew Livesay
- * andrewl@multco.us
- *
- * $Id: squiredmodule.c 38 2011-08-30 00:45:29Z alivesay $
  *
  * Provides lightweight inotify API interface for squired.py
  *
