@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 
 """Usage: squire [--csv [--output-file-csv=FILENAME]] [--xml [--output-file-xml=FILENAME]] --file=FILENAME
 

@@ -1,4 +1,4 @@
-#!/opt/ActivePython-2.7/bin/python
+#!/usr/bin/python
 
 import os
 import sys
