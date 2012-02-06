@@ -87,7 +87,6 @@ p.flags {
                 <th>Call #</th>
                 <th>Author</th>
                 <th>Title</th>
-                <th>Volume</th>
                 <th>Flags</th>
                 <th>Bib #</th>
             </tr>
@@ -106,8 +105,7 @@ p.flags {
         <td class="nowrap"><xsl:value-of select="requested_count" disable-output-escaping="yes" /><xsl:text> of </xsl:text><xsl:value-of select="available_count" /></td>
         <td><xsl:value-of select="call_number" disable-output-escaping="yes" /></td>
         <td><xsl:value-of select="author" disable-output-escaping="yes" /></td>
-        <td><xsl:value-of select="title" disable-output-escaping="yes" /></td>
-        <td><xsl:value-of select="volume" disable-output-escaping="yes" /></td>
+        <td><xsl:value-of select="title" disable-output-escaping="yes" /> <xsl:value-of select="volume" disable-output-escaping="yes" /></td>
         <td><xsl:value-of select="flags" disable-output-escaping="yes" /></td>
         <td><xsl:text disable-output-escaping="yes">&lt;a href="</xsl:text><xsl:value-of select="$search_baseurl" /><xsl:value-of select="normalize-space(bib_number)" /><xsl:text disable-output-escaping="yes">"&gt;</xsl:text><xsl:value-of select="normalize-space(bib_number)" /><xsl:text disable-output-escaping="yes">&lt;/a&gt;</xsl:text></td>
     <xsl:text disable-output-escaping="yes">&lt;/tr&gt;</xsl:text>
