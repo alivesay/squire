@@ -20,7 +20,7 @@
 }
 
 tr.paginglist-alt {
-    background-color: #f0f0f0;
+    background-color: #DDDDDD;
 }
 
 #paginglist {
