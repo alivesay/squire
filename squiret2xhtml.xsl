@@ -105,7 +105,7 @@ p.flags {
       <xsl:otherwise><xsl:text disable-output-escaping="yes">&lt;tr class="paginglist-alt"&gt;</xsl:text></xsl:otherwise>
     </xsl:choose>
         <td class="nowrap"><xsl:value-of select="requested_count" disable-output-escaping="yes" /><xsl:text> of </xsl:text><xsl:value-of select="available_count" /></td>
-        <td><xsl:value-of select="call_number" disable-output-escaping="yes" /><xsl:value-of select="volume" disable-output-escaping="yes" /></td>
+        <td><xsl:value-of select="call_number" disable-output-escaping="yes" /> <xsl:value-of select="volume" disable-output-escaping="yes" /></td>
         <td><xsl:value-of select="author" disable-output-escaping="yes" /></td>
         <td><xsl:value-of select="title" disable-output-escaping="yes" /></td>
         <td><xsl:value-of select="flags" disable-output-escaping="yes" /></td>
