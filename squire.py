@@ -478,7 +478,7 @@ def records_to_csv(records, filename=None):
         writer.writerow(headers)
 
         # write rows sorted by "call_number"
-        for row in sorted(sorted(data, key=operator.itemgetter("call_number")), key=operator.itemgetter("flags")):
+        for row in sorted(sorted(sorted(data, key=operator.itemgetter("call_number")), key=operator.itemgetter("location")), key=operator.itemgetter("flags")):
             record = dict(row)
 
             if not INCLUDE_LOCATION_IN_CSV:
@@ -551,7 +551,7 @@ def records_to_xml(records, filename=None):
     root_node.setAttribute("search_baseurl", search_baseurl)
     doc.appendChild(root_node)
 
-    for row in sorted(sorted(data, key=operator.itemgetter("call_number")), key=operator.itemgetter("flags")):
+    for row in sorted(sorted(sorted(data, key=operator.itemgetter("call_number")), key=operator.itemgetter("location")), key=operator.itemgetter("flags")):
         record_to_xml(doc, root_node, row)
 
     if filename:
