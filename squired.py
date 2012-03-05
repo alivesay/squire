@@ -490,6 +490,9 @@ class SquireDaemon:
 
         except:
             self.__logger.info(sys.exc_info()[1])
+                
+        latest_item_link = "%s%s/latest_item.html" % (LISTS_DIR, p_info["basename"])
+        latest_raw_item_link = "%s%s/latest_item_raw.txt" % (LISTS_DIR, p_info["basename"])
 
         if p_info["has_item_list"]:
             # generate item HTML, if available
@@ -500,10 +503,6 @@ class SquireDaemon:
                 # blocking is probably okay here...maybe...
                 p = Popen("%s -o %s %s %s" % (XSLTPROC_CMD, item_html_filename, SQUIRE_I_2XHTML_XSL_FILE, p_info["item_list_fullpath_xml"]), shell=True)
                 sts = os.waitpid(p.pid, 0)[1]
-
-                # create symlink
-                latest_item_link = "%s%s/latest_item.html" % (LISTS_DIR, p_info["basename"])
-                latest_raw_item_link = "%s%s/latest_item_raw.txt" % (LISTS_DIR, p_info["basename"])
 
                 try:
                     os.remove(latest_item_link)
@@ -527,7 +526,12 @@ class SquireDaemon:
 
             except:
                 self.__logger.info(sys.exc_info()[1])
-
+        else:
+            try:
+                os.remove(latest_item_link)
+                os.remove(latest_raw_item_link)
+            except:
+                self.__logger.info(sys.exc_info()[1])
 
         # send email
         if branch_name in self.__location_emails:
