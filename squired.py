@@ -44,7 +44,7 @@ import squired
 ################################################################################
 
 HELP_DESK_EMAIL = "help.desk@yourlibrary.org"   # displayed in paging list email
-HELP_DESK_PHONE = "x85100" 
+HELP_DESK_PHONE = "x85100"
 
 DIR_CONFIG  = "/etc/squired"
 DIR_VAR     = "/var/lib/squired"
@@ -105,6 +105,11 @@ TIMESTAMP_ACTIVE = True
 
 LISTS_URL = "http://catalog.yourlibrary.org:8000"
 LISTS_DIR = "/var/www/html/"
+
+NO_ITEM_HTML_FILENAME  = os.path.join(LISTS_DIR, "no_item_list.html")
+NO_ITEM_RAW_FILENAME   = os.path.join(LISTS_DIR, "no_item_list.txt")
+NO_TITLE_HTML_FILENAME = os.path.join(LISTS_DIR, "no_title_list.html")
+NO_TITLE_RAW_FILENAME  = os.path.join(LISTS_DIR, "no_title_list.txt")
 
 ITEM_LIST_TIMEOUT = 900          # in seconds, how long to wait for item lists
 
@@ -490,7 +495,7 @@ class SquireDaemon:
 
         except:
             self.__logger.info(sys.exc_info()[1])
-                
+
         latest_item_link = "%s%s/latest_item.html" % (LISTS_DIR, p_info["basename"])
         latest_raw_item_link = "%s%s/latest_item_raw.txt" % (LISTS_DIR, p_info["basename"])
 
@@ -506,20 +511,12 @@ class SquireDaemon:
 
                 try:
                     os.remove(latest_item_link)
-                except:
-                    pass
-
-                try:
-                    os.symlink(item_html_filename, latest_item_link)
-                except:
-                    self.__logger.info(sys.exc_info()[1])
-
-                try:
                     os.remove(latest_raw_item_link)
                 except:
                     pass
 
                 try:
+                    os.symlink(item_html_filename, latest_item_link)
                     os.symlink(p_info["item_list_fullpath_archive"], latest_raw_item_link)
                 except:
                     self.__logger.info(sys.exc_info()[1])
@@ -530,6 +527,12 @@ class SquireDaemon:
             try:
                 os.remove(latest_item_link)
                 os.remove(latest_raw_item_link)
+            except:
+                pass
+
+            try:
+                os.symlink(NO_ITEM_HTML_FILENAME, latest_item_link)
+                os.symlink(NO_ITEM_RAW_FILENAME, latest_raw_item_link)
             except:
                 self.__logger.info(sys.exc_info()[1])
 
