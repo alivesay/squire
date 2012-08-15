@@ -481,6 +481,8 @@ def records_to_csv(records, filename=None):
         for row in sorted(sorted(sorted(data, key=operator.itemgetter("call_number")), key=operator.itemgetter("location")), key=operator.itemgetter("flags")):
             record = dict(row)
 
+            record['bib_number'] = record.get('bib_number') + 'a'
+
             if not INCLUDE_LOCATION_IN_CSV:
                 del record["location"]
 
