@@ -19,6 +19,8 @@ from datetime import datetime
 
 from WebPACScraper import WebPACScraper
 
+from plc import PagingListStatistics
+
 ###############################################################################
 # config
 ###############################################################################
@@ -52,6 +54,11 @@ INCLUDE_PICKUP_LOCATION_IN_CSV = False
 
 # Write UTF-8 byte order mark to CSV files?
 WRITE_BOM_TO_CSV = True
+
+# Redis
+REDIS_SERVER = 'redis.yourlibrary.org'
+REDIS_PORT   = 6379
+REDIS_KEY    = 'plc'
 
 ###############################################################################
 
@@ -570,6 +577,14 @@ def records_to_xml(records, filename=None):
 
     else:
         print doc.toprettyxml(indent="   ")
+        
+    # log to redis
+    try:
+        plc = PagingListStatistics(REDIS_SERVER, REDIS_PORT, REDIS_KEY)
+        plc.setBranchCount(location, datetime.now().strftime('%A'), str(len(records)))
+    except Exception, e:
+        sys.stderr.write('Error: redis:updateBranchCount failed: %s' % str(e))
+
 
 
 def record_to_xml(doc, parent, record):
