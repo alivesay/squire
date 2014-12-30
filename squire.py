@@ -260,6 +260,8 @@ def get_line_type(line=None, last_type=LineTypes.INVALID):
                 return LineTypes.BLOCK_LINE_2
             elif last_type == LineTypes.BLOCK_LINE_2:
                 return LineTypes.BLOCK_LINE_3
+            elif last_type == LineTypes.BLOCK_LINE_3:
+                return LineTypes.BLOCK_LINE_4
             elif last_type == LineTypes.CAPTION:
                 return LineTypes.TIMESTAMP
             elif last_type == LineTypes.PAGE_MARK:
